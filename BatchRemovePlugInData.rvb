@@ -1,0 +1,54 @@
+﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' BatchRemovePlugInData.rvb -- July 2012
+' If this code works, it was written by Dale Fugier.
+' If not, I don't know who wrote it.
+' Works with Rhino 4.0.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' BatchRemovePlugInData
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub BatchRemovePlugInData
+
+  Dim sFolder : sFolder = Rhino.WorkingFolder
+  sFolder = Rhino.BrowseForFolder(sFolder, "Select folder to process", "Batch Remove Plug-in Data" )
+  If IsNull(sFolder) Then Exit Sub
+
+  Dim oFSO : Set oFSO = CreateObject("Scripting.FileSystemObject") 
+  Dim oFolder : Set oFolder = oFSO.GetFolder(sFolder)
+  
+  Call RemovePlugInData(oFSO, oFolder)
+  
+  Call Rhino.DocumentModified(False)
+  Call Rhino.Command("_-New _None", 0)
+  
+  Call Rhino.Print("Done!")  
+
+End Sub
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' RemovePlugInData
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub RemovePlugInData(oFSO, oFolder)
+
+  Dim oFile, strOpen
+  For Each oFile In oFolder.Files
+    If LCase(oFSO.GetExtensionName(oFile.Path)) = "3dm" Then
+      strOpen = LCase(oFile.Path)
+      Call Rhino.DocumentModified(False)
+      Call Rhino.Command("_-Open " & Chr(34) & strOpen & Chr(34), 0)
+      Call Rhino.Command("_-Save _SavePlugInData=_No _Enter", 0)
+    End If
+  Next
+
+  ' *** NOTE ***
+  ' Comment the following out if you do 
+  ' not want to recurse this folder.
+  Dim oSubFolder
+  For Each oSubFolder In oFolder.SubFolders
+    Call RemovePlugInData(oFSO, oSubFolder)
+  Next
+
+End Sub 
