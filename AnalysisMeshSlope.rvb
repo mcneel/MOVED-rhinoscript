@@ -59,3 +59,4 @@ Sub AnalysisMeshSlope()
   Call objAnalysis.AnalysisMeshData(strMesh, arrAngles)
   
 End Sub
+
