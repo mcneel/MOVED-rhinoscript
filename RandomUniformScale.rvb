@@ -36,7 +36,3 @@ Sub RandomUniformScale
   Call Rhino.EnableRedraw(True)
   
 End Sub
-
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Rhino.AddStartUpScript Rhino.LastLoadedScriptFile
-Rhino.AddAlias "RandomUniformScale", "_-RunScript (RandomUniformScale)"
