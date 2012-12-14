@@ -1,0 +1,45 @@
+﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' PolarZonohedron.rvb -- November 2012
+' If this code works, it was written by Dale Fugier.
+' If not, I don't know who wrote it.
+' Works with Rhino 4.0 and 5.0.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Option Explicit
+
+Sub PolarZonohedron
+  
+  Dim frequency, pitch, length
+  Dim vector, points(3), i, j, p_rotate, f_rotate, face, angle
+  
+  frequency = 8
+  pitch = Atn(Sqr(2)/2)
+  length = 12
+  
+  points(0) = Array(0,0,0)
+  vector = Array(Cos(pitch), 0, Sin(pitch))
+  vector = Rhino.VectorScale(vector, length)
+
+  Call Rhino.EnableRedraw(False)
+  
+  For i = 1 To frequency - 1
+    
+    angle = Rhino.ToDegrees(i * 2 * Rhino.PI / frequency)
+    p_rotate = Rhino.XformRotation(angle, Array(0,0,1), points(0))
+    points(1) = Rhino.PointAdd(points(0), vector)
+    points(3) = Rhino.PointTransform(points(1), p_rotate)
+    points(2) = Rhino.PointAdd(points(3), vector)
+    
+    For j = 0 To frequency - 1
+      angle = Rhino.ToDegrees(j * 2 * Rhino.PI / frequency)
+      f_rotate = Rhino.XformRotation(angle, Array(0,0,1), Array(0,0,0))     
+      face = Rhino.AddSrfPt(Rhino.PointArrayTransform(points, f_rotate))
+    Next
+    
+    points(0) = points(3)
+    
+  Next
+  
+  Call Rhino.EnableRedraw(True)
+  
+End Sub
