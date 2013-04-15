@@ -8,24 +8,39 @@ Option Explicit
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Randomly offsets one or more closed, planar curves.
-' To control the random offset range, just modify the
-' RND_MIN and RND_MAX constant values.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub RandomOffsetCrv
   
   ' Declare contants
   Const RH_CRV = 4
-  Const RND_MIN = 1.0 ' minimum random number range
-  Const RND_MAX = 5.0 ' maximum random number range
   
   ' Declare variables
-  Dim arrCurves, strCurve
+  Dim arrCurves, strCurve, nCount, arrInside, blnInside
+  Dim dblRndMin, dblRndMax, i
   Dim arrDirection, dblDistance
   Dim arrPlane, arrNormal, arrBox
-
+  
   ' Prompt the user to pick some closed, planar curves
   arrCurves = Rhino.GetObjects("Select closed, planar curves to offset randomly", RH_CRV, True, True)
   If IsNull(arrCurves) Then Exit Sub
+  
+  ' Prompt for the number of offsets  
+  nCount = Rhino.GetInteger("Number of offsets", 1, 1)
+  If IsNull(nCount) Then Exit Sub
+      
+  ' Prompt for offset direction
+  arrInside = Rhino.GetBoolean("Offset direction", Array("Direction", "Outside", "Inside"), Array(True))
+  If IsNull(arrInside) Then Exit Sub
+  blnInside = arrInside(0)
+     
+  ' Prompt for minimum random range
+  dblRndMin = Rhino.GetReal("Minimum offset", 1.0, Rhino.UnitAbsoluteTolerance)
+  If IsNull(dblRndMin) Then Exit Sub
+  If (dblRndMin = 0) Then Exit Sub
+    
+  ' Prompt for maximum random range
+  dblRndMax = Rhino.GetReal("Maximum offset", 3.0, dblRndMin + Rhino.UnitAbsoluteTolerance)
+  If IsNull(dblRndMax) Then Exit Sub
     
   ' Turn off screen redrawing (for better performance)    
   Call Rhino.EnableRedraw(False)
@@ -43,18 +58,27 @@ Sub RandomOffsetCrv
       If Rhino.IsCurvePlanar(strCurve) Then
         
         ' Calculate a point that is outside of the curve
-        arrBox = Rhino.BoundingBox(strCurve)
-        arrDirection = Rhino.PointAdd(arrBox(0), Rhino.VectorCreate(arrBox(0), arrBox(2)))
+        If (blnInside = True) Then
+          arrDirection = Rhino.CurveAreaCentroid(strCurve)(0)
+        Else
+          arrBox = Rhino.BoundingBox(strCurve)
+          arrDirection = Rhino.PointAdd(arrBox(0), Rhino.VectorCreate(arrBox(0), arrBox(2)))
+        End If          
         
         ' Get curve's plane and, thus, normal direction
         arrPlane = Rhino.CurvePlane(strCurve)
         arrNormal = arrPlane(3)
         
-        ' Calculate a random offset distance
-        dblDistance = Rnd * (RND_MAX - RND_MIN) + RND_MIN
-
-        ' Offset the closed, planar curve
-        Call Rhino.OffsetCurve(strCurve, arrDirection, dblDistance, arrNormal, 1)
+        ' Do offsetting...
+        For i = 0 To nCount - 1
+            
+          ' Calculate a random offset distance
+          dblDistance = Rnd * (dblRndMax - dblRndMin) + dblRndMin
+  
+          ' Offset the closed, planar curve
+          Call Rhino.OffsetCurve(strCurve, arrDirection, dblDistance, arrNormal, 1)
+          
+        Next
 
       End If
       
@@ -66,4 +90,3 @@ Sub RandomOffsetCrv
   Call Rhino.EnableRedraw(True)
   
 End Sub
-  
