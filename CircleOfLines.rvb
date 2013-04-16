@@ -3,6 +3,8 @@
 ' If this code works, it was written by Dale Fugier.
 ' If not, I don't know who wrote it.
 ' Works with Rhino 4 and 5.
+'
+' http://en.wikipedia.org/wiki/Complete_graph
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
