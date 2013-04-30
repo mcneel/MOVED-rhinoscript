@@ -20,6 +20,23 @@ Function IsArrayDim(ByVal arr)
 End Function
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Safely returns the upper bounds of an array
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Function SafeUBound(ByVal arr)
+  Dim ub
+  SafeUBound = Null
+  If IsArray(arr) Then
+    On Error Resume Next
+    ub = UBound(arr)
+    If Err.Number = 0 Then
+      SafeUBound = ub
+    Else
+      SafeUBound = -1
+    End If
+  End If
+End Function
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Returns the number of dimensions to an array
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetArrayDim(ByVal arr)
