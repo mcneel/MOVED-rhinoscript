@@ -54,6 +54,28 @@ Public Function GetArrayDim(ByRef arrValue)
 End Function
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' String formatting function.
+' Example:
+'   str = FormatString("Hello, Mr. {0}, today is {1}.", Array("McNeel", Date))
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Function FormatString(ByVal str, ByVal arr)
+  Dim i
+
+  FormatString = Null
+
+  If VarType(str) <> vbString Then Exit Function
+  If Not IsArray(arr) Then Exit Function
+
+  For i = 0 To UBound(arr)
+    str = Replace(str, "{" & CStr(i) & "}", CStr(arr(i)))
+  Next
+  str = Replace(str, "\n", VbCrLf)
+  str = Replace(str, "\t", vbTab)
+
+  FormatString = str
+End Function
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Includes, or loads, other RhinoScript files.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Sub Include(strFile)
