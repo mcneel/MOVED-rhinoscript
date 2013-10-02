@@ -4,17 +4,14 @@
 ' If not, I don't know who wrote it.
 ' Works with Rhino 5.0.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
 Option Explicit
-
-BatchRemovePlugInData
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' BatchRemovePlugInData
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub BatchRemovePlugInData
 	
-	If (Rhino.ExeVersion <> 5) Then
+	If (Rhino.ExeVersion < 5) Then
 		Call Rhino.Print("This script requires Rhino 5.0 for greater.")
 		Exit Sub
 	End If
