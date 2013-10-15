@@ -15,7 +15,7 @@ Sub CenterMark
 	Const RH_CRV = &h4
   
 	' Local variables
-	Dim strCurve, arrPlane, dblSize
+	Dim strCurve, arrPlane, blnIsCircle, dblSize
 	Dim arrCenter, arrDir, arrStart, arrEnd
 	Dim arrLines(1)
 
@@ -26,19 +26,23 @@ Sub CenterMark
 	End If
   
 	' Select a circle
-	strCurve = Rhino.GetObject("Select circle to add center mark", RH_CRV)
+	strCurve = Rhino.GetObject("Select an arc or circle to add center mark", RH_CRV)
 	If IsNull(strCurve) Then Exit Sub
   
 	' Is it really a circle?  
-	If Not Rhino.IsCircle(strCurve) Then
-		Call Rhino.Print("Curve it not a circle.")
+	If Rhino.IsCircle(strCurve) Then
+		blnIsCircle = True
+	ElseIf Rhino.IsArc(strCurve) Then
+		blnIsCircle = False
+	Else
+		Call Rhino.Print("Curve is not an arc or circle.")
 		Exit Sub
 	End If
   
 	' Is the circle planar to the active construction plane?
 	arrPlane = Rhino.ViewCPlane
 	If Not Rhino.IsCurveInPlane(strCurve, arrPlane) Then
-		Call Rhino.Print("Circle does not lie on the active construction plane.")
+		Call Rhino.Print("Curve does not lie on the active construction plane.")
 		Exit Sub
 	End If
 	
@@ -48,8 +52,12 @@ Sub CenterMark
 	dblSize = Rhino.DimStyleCentermarkSize(Rhino.CurrentDimStyle)
   
 	' Get the center point of the circle
-	arrCenter = Rhino.CircleCenterPoint(strCurve)
-  
+	If blnIsCircle Then
+		arrCenter = Rhino.CircleCenterPoint(strCurve)
+	Else
+		arrCenter = Rhino.ArcCenterPoint(strCurve)
+	End If
+
 	' Create a center mark line in the x-axis direction
 	arrDir = Rhino.VectorScale(arrPlane(1), dblSize)
 	arrStart = Rhino.PointSubtract(arrCenter, arrDir)
@@ -76,7 +84,7 @@ Sub CenterLine
 	Const RH_CRV = &h4
   
 	' Local variables
-	Dim strCurve, arrPlane, dblSize
+	Dim strCurve, arrPlane, blnIsCircle, dblSize
 	Dim arrCenter, dblRadius, arrDir, arrStart, arrEnd
 	Dim arrLines(5)
 
@@ -87,19 +95,23 @@ Sub CenterLine
 	End If
   
 	' Select a circle
-	strCurve = Rhino.GetObject("Select circle to add center line", RH_CRV)
+	strCurve = Rhino.GetObject("Select an arc or circle to add center mark", RH_CRV)
 	If IsNull(strCurve) Then Exit Sub
   
 	' Is it really a circle?  
-	If Not Rhino.IsCircle(strCurve) Then
-		Call Rhino.Print("Curve it not a circle.")
+	If Rhino.IsCircle(strCurve) Then
+		blnIsCircle = True
+	ElseIf Rhino.IsArc(strCurve) Then
+		blnIsCircle = False
+	Else
+		Call Rhino.Print("Curve is not an arc or circle.")
 		Exit Sub
 	End If
   
 	' Is the circle planar to the active construction plane?
 	arrPlane = Rhino.ViewCPlane
 	If Not Rhino.IsCurveInPlane(strCurve, arrPlane) Then
-		Call Rhino.Print("Circle does not lie on the active construction plane.")
+		Call Rhino.Print("Curve does not lie on the active construction plane.")
 		Exit Sub
 	End If
 	
@@ -109,8 +121,13 @@ Sub CenterLine
 	dblSize = Rhino.DimStyleCentermarkSize(Rhino.CurrentDimStyle)
   
 	' Get the center point of the circle
-	arrCenter = Rhino.CircleCenterPoint(strCurve)
-	dblRadius = Rhino.CircleRadius(strCurve)
+	If blnIsCircle Then
+		arrCenter = Rhino.CircleCenterPoint(strCurve)
+		dblRadius = Rhino.CircleRadius(strCurve)
+	Else
+		arrCenter = Rhino.ArcCenterPoint(strCurve)
+		dblRadius = Rhino.ArcRadius(strCurve)
+	End If		
   
 	' Create center mark line in the x-axis direction
 	arrDir = Rhino.VectorScale(arrPlane(1), dblSize)
