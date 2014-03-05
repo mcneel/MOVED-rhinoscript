@@ -57,3 +57,4 @@ Sub PolarZonohedron
   Call Rhino.EnableRedraw(True)
   
 End Sub
+
