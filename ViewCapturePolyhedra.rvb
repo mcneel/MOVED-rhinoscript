@@ -491,7 +491,7 @@ Function GetPolyhedraCommands
 	Call objList.Add("Tetrahedron")
 	Call objList.Add("Tetrahemihexahedron")
 	Call objList.Add("TetrakisCuboctahedron")
-	'Call objList.Add("TetrakisHexahedron")
+	Call objList.Add("TetrakisHexahedron")
 	Call objList.Add("TetrakisSnubCube")
 	Call objList.Add("TriakisIcosahedron")
 	Call objList.Add("TriakisOctahedron")
