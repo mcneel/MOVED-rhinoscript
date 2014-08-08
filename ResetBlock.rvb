@@ -1,0 +1,31 @@
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' ResetBlock.rvb -- August 2014
+' If this code works, it was written by Dale Fugier.
+' If not, I don't know who wrote it.
+' Works with Rhino 5.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Option Explicit
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Main subroutine
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Sub ResetBlock
+	
+	Const RH_BLOCK = &h1000
+	Dim arrBlocks, strBlock, arrPoint, strName
+	
+	arrBlocks = Rhino.GetObjects("Select block instances to reset", RH_BLOCK, True, True)
+	If IsNull(arrBlocks) Then Exit Sub
+	
+	Call Rhino.EnableRedraw(False)
+	
+	For Each strBlock In arrBlocks
+		strName = Rhino.BlockInstanceName(strBlock)
+		arrPoint = Rhino.BlockInstanceInsertPoint(strBlock)
+		Call Rhino.InsertBlock(strName, arrPoint)
+		Call Rhino.DeleteObject(strBlock)
+	Next
+	
+	Call Rhino.EnableRedraw(True)
+
+End Sub
