@@ -55,12 +55,12 @@ If Err.Number <> 0 Then
 End If
 Call WScript.Echo("Rhino created")  
   
-' Wait until Rhino to finish initializing
+' Wait for Rhino to finish initializing
 nRetries = 0
 Do While (nRetries < 10)
   Set oRhinoScript = oRhino.GetScriptObject
   If objRhino.IsInitialized = 0 Then
-    Call WScript.Sleep(100)
+    Call WScript.Sleep(500)
     nRetries = nRetries + 1
   Else
     Call WScript.Echo("Rhino initialization failed")
