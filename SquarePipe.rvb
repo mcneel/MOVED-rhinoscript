@@ -46,8 +46,8 @@ Sub SquarePipe
 
 	' Define the points of the square  
 	Dim arrPoints(4)
-	arrPoints(0) = Rhino.PointAdd(x0, VectorNegate(arrY))
-	arrPoints(1) = Rhino.PointAdd(y1, VectorNegate(arrX))
+	arrPoints(0) = Rhino.PointAdd(x0, Rhino.VectorReverse(arrY))
+	arrPoints(1) = Rhino.PointAdd(y1, Rhino.VectorReverse(arrX))
 	arrPoints(2) = Rhino.PointAdd(x1, arrY)
 	arrPoints(3) = Rhino.PointAdd(y0, arrX)
 	arrPoints(4) = arrPoints(0)
