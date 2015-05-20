@@ -3,6 +3,13 @@
 ' If this code works, it was written by Dale Fugier.
 ' If not, I don't know who wrote it.
 ' Works with Rhino 4 and 5.
+'
+' Note well:
+' The Rhino SDK does not contain functions that will decompose a
+' transformation matrix into it's individual components (e.g. scale, 
+' rotation, translation). If you Google the topic, you will probably 
+' find lots if information on the subject. Just keep in mind that there
+' is no perfect solution for this, as you will find in your research.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Option Explicit
 
